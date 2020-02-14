@@ -1,0 +1,455 @@
+---
+title: "HR_Probability_Nationals"
+output: github_document
+---
+```{r}
+library(dplyr)
+library(ggplot2)
+library(broom)
+```
+
+```{r}
+#Importing CSV of Baseball Savant Data for ABs in 2019
+
+PeteAlonso <- read.csv("PeteAlonso.csv", header = T)
+JuanSoto <- read.csv("JuanSoto.csv", header = T)
+TreaTurner <- read.csv("TreaTurner.csv", header = T)
+VictorRobles <- read.csv("VictorRobles.csv", header = T)
+```
+
+```{r}
+#Adding ESPN's Park Factor Value to the data based on stadium of at-bat
+PeteAlonso$park_factor <- ifelse(PeteAlonso$home_team == "COL", 1.394, 
+       ifelse(PeteAlonso$home_team == "TEX", 1.245,
+              ifelse(PeteAlonso$home_team == "DET", 1.107,
+                     ifelse(PeteAlonso$home_team == "WSH", 1.101,
+                            ifelse(PeteAlonso$home_team == "BAL", 1.088,
+                                   ifelse(PeteAlonso$home_team == "MIA", 1.087,
+                                          ifelse(PeteAlonso$home_team == "HOU", 1.083,
+        ifelse(PeteAlonso$home_team == "KC", 1.074,
+               ifelse(PeteAlonso$home_team == "BOS", 1.063,
+                      ifelse(PeteAlonso$home_team == "PHI", 1.047,
+                             ifelse(PeteAlonso$home_team == "CIN", 1.038,
+                                    ifelse(PeteAlonso$home_team == "TOR", 1.031,
+                                           ifelse(PeteAlonso$home_team == "LAA", 1.018,
+        ifelse(PeteAlonso$home_team == "PIT", 1.004,
+               ifelse(PeteAlonso$home_team == "ATL", 1.003,
+                   ifelse(PeteAlonso$home_team == "ARI", 0.977,  
+                          ifelse(PeteAlonso$home_team == "MIL", 0.976,
+                                 ifelse(PeteAlonso$home_team == "MIN", 0.975,
+                                        ifelse(PeteAlonso$home_team == "CLE", 0.972,
+        ifelse(PeteAlonso$home_team == "CWS", 0.966,
+               ifelse(PeteAlonso$home_team == "SEA", 0.952,
+                      ifelse(PeteAlonso$home_team == "CHC", 0.931,
+                             ifelse(PeteAlonso$home_team == "STL", 0.917,
+                                    ifelse(PeteAlonso$home_team == "LAD", 0.905,
+                                           ifelse(PeteAlonso$home_team == "TB", 0.895,
+        ifelse(PeteAlonso$home_team == "NYM", 0.891,
+               ifelse(PeteAlonso$home_team == "OAK", 0.887,
+                      ifelse(PeteAlonso$home_team == "SD", 0.860,
+                             ifelse(PeteAlonso$home_team == "NYY", 0.816,
+                                    ifelse(PeteAlonso$home_team == "SF", 0.798,
+              0.00))))))))))))))))))))))))))))))
+
+JuanSoto$park_factor <- ifelse(JuanSoto$home_team == "COL", 1.394, 
+       ifelse(JuanSoto$home_team == "TEX", 1.245,
+              ifelse(JuanSoto$home_team == "DET", 1.107,
+                     ifelse(JuanSoto$home_team == "WSH", 1.101,
+                            ifelse(JuanSoto$home_team == "BAL", 1.088,
+                                   ifelse(JuanSoto$home_team == "MIA", 1.087,
+                                          ifelse(JuanSoto$home_team == "HOU", 1.083,
+        ifelse(JuanSoto$home_team == "KC", 1.074,
+               ifelse(JuanSoto$home_team == "BOS", 1.063,
+                      ifelse(JuanSoto$home_team == "PHI", 1.047,
+                             ifelse(JuanSoto$home_team == "CIN", 1.038,
+                                    ifelse(JuanSoto$home_team == "TOR", 1.031,
+                                           ifelse(JuanSoto$home_team == "LAA", 1.018,
+        ifelse(JuanSoto$home_team == "PIT", 1.004,
+               ifelse(JuanSoto$home_team == "ATL", 1.003,
+                   ifelse(JuanSoto$home_team == "ARI", 0.977,  
+                          ifelse(JuanSoto$home_team == "MIL", 0.976,
+                                 ifelse(JuanSoto$home_team == "MIN", 0.975,
+                                        ifelse(JuanSoto$home_team == "CLE", 0.972,
+        ifelse(JuanSoto$home_team == "CWS", 0.966,
+               ifelse(JuanSoto$home_team == "SEA", 0.952,
+                      ifelse(JuanSoto$home_team == "CHC", 0.931,
+                             ifelse(JuanSoto$home_team == "STL", 0.917,
+                                    ifelse(JuanSoto$home_team == "LAD", 0.905,
+                                           ifelse(JuanSoto$home_team == "TB", 0.895,
+        ifelse(JuanSoto$home_team == "NYM", 0.891,
+               ifelse(JuanSoto$home_team == "OAK", 0.887,
+                      ifelse(JuanSoto$home_team == "SD", 0.860,
+                             ifelse(JuanSoto$home_team == "NYY", 0.816,
+                                    ifelse(JuanSoto$home_team == "SF", 0.798,
+              0.00))))))))))))))))))))))))))))))
+
+TreaTurner$park_factor <- ifelse(TreaTurner$home_team == "COL", 1.394, 
+       ifelse(TreaTurner$home_team == "TEX", 1.245,
+              ifelse(TreaTurner$home_team == "DET", 1.107,
+                     ifelse(TreaTurner$home_team == "WSH", 1.101,
+                            ifelse(TreaTurner$home_team == "BAL", 1.088,
+                                   ifelse(TreaTurner$home_team == "MIA", 1.087,
+                                      ifelse(TreaTurner$home_team == "HOU", 1.083,
+        ifelse(TreaTurner$home_team == "KC", 1.074,
+               ifelse(TreaTurner$home_team == "BOS", 1.063,
+                      ifelse(TreaTurner$home_team == "PHI", 1.047,
+                             ifelse(TreaTurner$home_team == "CIN", 1.038,
+                                    ifelse(TreaTurner$home_team == "TOR", 1.031,
+                                     ifelse(TreaTurner$home_team == "LAA", 1.018,
+        ifelse(TreaTurner$home_team == "PIT", 1.004,
+               ifelse(TreaTurner$home_team == "ATL", 1.003,
+                   ifelse(TreaTurner$home_team == "ARI", 0.977,  
+                          ifelse(TreaTurner$home_team == "MIL", 0.976,
+                                 ifelse(TreaTurner$home_team == "MIN", 0.975,
+                                      ifelse(TreaTurner$home_team == "CLE", 0.972,
+        ifelse(TreaTurner$home_team == "CWS", 0.966,
+               ifelse(TreaTurner$home_team == "SEA", 0.952,
+                      ifelse(TreaTurner$home_team == "CHC", 0.931,
+                             ifelse(TreaTurner$home_team == "STL", 0.917,
+                                    ifelse(TreaTurner$home_team == "LAD", 0.905,
+                                        ifelse(TreaTurner$home_team == "TB", 0.895,
+        ifelse(TreaTurner$home_team == "NYM", 0.891,
+               ifelse(TreaTurner$home_team == "OAK", 0.887,
+                      ifelse(TreaTurner$home_team == "SD", 0.860,
+                             ifelse(TreaTurner$home_team == "NYY", 0.816,
+                                    ifelse(TreaTurner$home_team == "SF", 0.798,
+              0.00))))))))))))))))))))))))))))))
+
+VictorRobles$park_factor <- ifelse(VictorRobles$home_team == "COL", 1.394, 
+       ifelse(VictorRobles$home_team == "TEX", 1.245,
+              ifelse(VictorRobles$home_team == "DET", 1.107,
+                     ifelse(VictorRobles$home_team == "WSH", 1.101,
+                            ifelse(VictorRobles$home_team == "BAL", 1.088,
+                                   ifelse(VictorRobles$home_team == "MIA", 1.087,
+                                      ifelse(VictorRobles$home_team == "HOU", 1.083,
+        ifelse(VictorRobles$home_team == "KC", 1.074,
+               ifelse(VictorRobles$home_team == "BOS", 1.063,
+                      ifelse(VictorRobles$home_team == "PHI", 1.047,
+                             ifelse(VictorRobles$home_team == "CIN", 1.038,
+                                    ifelse(VictorRobles$home_team == "TOR", 1.031,
+                                     ifelse(VictorRobles$home_team == "LAA", 1.018,
+        ifelse(VictorRobles$home_team == "PIT", 1.004,
+               ifelse(VictorRobles$home_team == "ATL", 1.003,
+                   ifelse(VictorRobles$home_team == "ARI", 0.977,  
+                          ifelse(VictorRobles$home_team == "MIL", 0.976,
+                                 ifelse(VictorRobles$home_team == "MIN", 0.975,
+                                      ifelse(VictorRobles$home_team == "CLE", 0.972,
+        ifelse(VictorRobles$home_team == "CWS", 0.966,
+               ifelse(VictorRobles$home_team == "SEA", 0.952,
+                      ifelse(VictorRobles$home_team == "CHC", 0.931,
+                             ifelse(VictorRobles$home_team == "STL", 0.917,
+                                    ifelse(VictorRobles$home_team == "LAD", 0.905,
+                                        ifelse(VictorRobles$home_team == "TB", 0.895,
+        ifelse(VictorRobles$home_team == "NYM", 0.891,
+               ifelse(VictorRobles$home_team == "OAK", 0.887,
+                      ifelse(VictorRobles$home_team == "SD", 0.860,
+                             ifelse(VictorRobles$home_team == "NYY", 0.816,
+                                    ifelse(VictorRobles$home_team == "SF", 0.798,
+              0.00))))))))))))))))))))))))))))))
+
+#Creating Dummy Homerun Variable
+PeteAlonso$homerun <- ifelse(PeteAlonso$events == "home_run", 1, 0)
+JuanSoto$homerun <- ifelse(JuanSoto$events == "home_run", 1, 0)
+TreaTurner$homerun <- ifelse(TreaTurner$events == "home_run", 1, 0)
+VictorRobles$homerun <- ifelse(VictorRobles$events == "home_run", 1, 0)
+```
+
+```{r}
+#Data formatting
+
+#Replacing nulls with NA
+PeteAlonso$launch_angle[PeteAlonso$launch_angle == "null"] <- NA
+PeteAlonso$launch_speed[PeteAlonso$launch_speed == "null"] <- NA
+PeteAlonso$effective_speed[PeteAlonso$effective_speed == "null"] <- NA
+PeteAlonso$release_spin_rate[PeteAlonso$release_spin_rate == "null"] <- NA
+PeteAlonso$hit_distance_sc[PeteAlonso$hit_distance_sc == "null"] <- NA
+
+#changing structure for analysis
+PeteAlonso$launch_angle <- as.numeric(as.character(PeteAlonso$launch_angle))
+PeteAlonso$launch_speed <- as.numeric(as.character(PeteAlonso$launch_speed))
+PeteAlonso$effective_speed <- as.numeric(as.character(PeteAlonso$effective_speed))
+PeteAlonso$release_spin_rate <- as.numeric(as.character(PeteAlonso$release_spin_rate))
+PeteAlonso$hit_distance_sc <- as.numeric(as.character(PeteAlonso$hit_distance_sc))
+```
+
+```{r}
+#Logistic Regression models
+#Standard Logistic Regression Model
+glm_Alonso <- glm(homerun ~ launch_angle + launch_speed + effective_speed +   release_spin_rate + park_factor, data = PeteAlonso, family = binomial, na.action = na.exclude)
+summary(glm_Alonso)
+
+#Improved Model using polynomial fitting for launch angle
+#Some regressors aren't statisticall significant but I chose to keep them anyways
+glm_Alonso2 <- glm(homerun ~ poly(launch_angle, 2, raw=TRUE) + launch_speed + effective_speed:release_spin_rate + park_factor, data = PeteAlonso, family = binomial, na.action = na.exclude)
+
+summary(glm_Alonso2)
+
+#Same model but with distance
+glm_Alonso3 <- lm(hit_distance_sc ~ poly(launch_angle,2,raw=TRUE) + launch_speed + effective_speed:release_spin_rate + park_factor, data = PeteAlonso, na.action = na.exclude)
+
+summary(glm_Alonso3)
+```
+
+```{r}
+#Filtering middle launch angle values
+PeteAlonso_middle <- PeteAlonso %>%
+  filter(launch_angle >= 0, launch_angle  <= 60)
+
+# scatterplot with jitter
+data_space <- ggplot(data = PeteAlonso_middle, aes(y = homerun, x = launch_angle)) + 
+      geom_jitter(width = 0, height = 0.05, alpha = 0.5) + ggtitle("Pete Alonso") 
+#smooth curve
+ data_space +
+  geom_smooth() + geom_vline(xintercept = 27.55)
+#We see highest point on geom_smooth curve occurs about launch angle = 27.55 degrees
+```
+
+ 
+```{r}
+# create new data frame with predictive data
+#Used Aaron Nola's 2019 averages (4seam Fb) and Alsonso's average EV
+#Saying it's at Citi Field for park factor
+new_pitch_Nola <- data.frame(launch_angle = 27.55, launch_speed = 94.7, effective_speed = 89.7, release_spin_rate = 2171, park_factor = 0.891)
+
+# make predictions on probability of a homerun on the given pitch at optimal launch angle
+augment(glm_Alonso2, newdata = new_pitch_Nola, type.predict = "response")
+# 0.1426
+
+# make predictions on expected distance on the given pitch at optimal launch angle
+augment(glm_Alonso3, newdata = new_pitch_Nola, type.predict = "response")
+#260.76 feet
+```
+
+
+```{r}
+#Confusion Matrix to see accuracy
+tidy.Alonso <- augment(glm_Alonso2, type.predict = "response") %>%
+    mutate(homerun.hat = round(.fitted))
+tidy.Alonso %>%
+  select(homerun, homerun.hat) %>%
+  table()
+```
+
+```{r}
+#Data formatting
+
+#Replacing nulls with NA
+JuanSoto$launch_angle[JuanSoto$launch_angle == "null"] <- NA
+JuanSoto$launch_speed[JuanSoto$launch_speed == "null"] <- NA
+JuanSoto$effective_speed[JuanSoto$effective_speed == "null"] <- NA
+JuanSoto$release_spin_rate[JuanSoto$release_spin_rate == "null"] <- NA
+JuanSoto$hit_distance_sc[JuanSoto$hit_distance_sc == "null"] <- NA
+
+#changing structure for analysis
+JuanSoto$launch_angle <- as.numeric(as.character(JuanSoto$launch_angle))
+JuanSoto$launch_speed <- as.numeric(as.character(JuanSoto$launch_speed))
+JuanSoto$effective_speed <- as.numeric(as.character(JuanSoto$effective_speed))
+JuanSoto$release_spin_rate <- as.numeric(as.character(JuanSoto$release_spin_rate))
+JuanSoto$hit_distance_sc <- as.numeric(as.character(JuanSoto$hit_distance_sc))
+```
+
+```{r}
+#Standard Logistic model 
+glm_Soto <- glm(homerun ~ launch_angle + launch_speed + effective_speed +   release_spin_rate + park_factor, data = JuanSoto, family = binomial, na.action = na.exclude)
+summary(glm_Soto)
+
+#Improved Model using polynomial fitting for launch angle
+#Some regressors aren't statisticall significant but I chose to keep them anyways
+glm_Soto2 <- glm(homerun ~ poly(launch_angle, 2, raw=TRUE) + launch_speed + effective_speed:release_spin_rate + park_factor, data = JuanSoto, family = binomial, na.action = na.exclude)
+
+summary(glm_Soto2)
+
+#Same model but with distance
+glm_Soto3 <- lm(hit_distance_sc ~ poly(launch_angle,2,raw=TRUE) + launch_speed + effective_speed:release_spin_rate + park_factor, data = JuanSoto, na.action = na.exclude)
+
+summary(glm_Soto3)
+```
+
+```{r}
+#Filtering middle launch angle values
+JuanSoto_middle <- JuanSoto %>%
+  filter(launch_angle >= 0, launch_angle  <= 60)
+
+# scatterplot with jitter
+data_space <- ggplot(data = JuanSoto_middle, aes(y = homerun, x = launch_angle)) + 
+      geom_jitter(width = 0, height = 0.05, alpha = 0.5) + ggtitle("JuanSoto") 
+#smooth curve
+ data_space +
+  geom_smooth() + geom_vline(xintercept = 29.5)
+ #We see highest point on geom_smooth curve occurs about launch angle = 29.5 degrees
+```
+
+```{r}
+# create new data frame with predictive data
+#Used Aaron Nola's 2019 averages (4seam Fb) and Soto's average EV
+#Assume game played at Nats Park
+new_pitch_Nola <- data.frame(launch_angle = 29.5, launch_speed = 96, effective_speed = 89.7, release_spin_rate = 2171, park_factor = 1.101)
+
+# make predictions on probability of a homerun on the given pitch at optimal launch angle
+augment(glm_Soto2, newdata = new_pitch_Nola, type.predict = "response")
+# 0.145137
+
+# make predictions on expected distance on the given pitch at optimal launch angle
+augment(glm_Soto3, newdata = new_pitch_Nola, type.predict = "response")
+#272.9573 feet
+```
+
+```{r}
+#Confusion Matrix
+tidy.Soto <- augment(glm_Soto2, type.predict = "response") %>%
+    mutate(homerun.hat = round(.fitted))
+tidy.Soto %>%
+  select(homerun, homerun.hat) %>%
+  table()
+```
+
+```{r}
+#Data formatting
+
+#Replacing nulls with NA
+TreaTurner$launch_angle[TreaTurner$launch_angle == "null"] <- NA
+TreaTurner$launch_speed[TreaTurner$launch_speed == "null"] <- NA
+TreaTurner$effective_speed[TreaTurner$effective_speed == "null"] <- NA
+TreaTurner$release_spin_rate[TreaTurner$release_spin_rate == "null"] <- NA
+TreaTurner$hit_distance_sc[TreaTurner$hit_distance_sc == "null"] <- NA
+
+#changing structure for analysis
+TreaTurner$launch_angle <- as.numeric(as.character(TreaTurner$launch_angle))
+TreaTurner$launch_speed <- as.numeric(as.character(TreaTurner$launch_speed))
+TreaTurner$effective_speed <- as.numeric(as.character(TreaTurner$effective_speed))
+TreaTurner$release_spin_rate <- as.numeric(as.character(TreaTurner$release_spin_rate))
+TreaTurner$hit_distance_sc <- as.numeric(as.character(TreaTurner$hit_distance_sc))
+
+```
+
+```{r}
+#Logistic model 
+glm_Turner <- glm(homerun ~ launch_angle + launch_speed + effective_speed +   release_spin_rate + park_factor, data = TreaTurner, family = binomial, na.action = na.exclude)
+
+summary(glm_Turner)
+
+#Improved Model using polynomial fitting for launch angle
+#Removed effective speed and spin on pitch because it was highly insignificant 
+glm_Turner2 <- glm(homerun ~ poly(launch_angle, 2, raw=TRUE) + launch_speed + park_factor, data = TreaTurner, family = binomial, na.action = na.exclude)
+
+summary(glm_Turner2)
+
+#Same model but with distance
+#Park factor highly insignificant 
+glm_Turner3 <- lm(hit_distance_sc ~ poly(launch_angle,2,raw=TRUE) + launch_speed, data = TreaTurner, na.action = na.exclude)
+
+summary(glm_Turner3)
+```
+
+```{r}
+#Filtering middle launch angle values
+TreaTurner_middle <- TreaTurner %>%
+  filter(launch_angle >= 0, launch_angle  <= 60)
+
+# scatterplot with jitter
+data_space <- ggplot(data = TreaTurner_middle, aes(y = homerun, x = launch_angle)) + geom_jitter(width = 0, height = 0.05, alpha = 0.5) + 
+  ggtitle("Trea Turner")
+#smooth curve
+ data_space +
+  geom_smooth() + geom_vline(xintercept = 26)
+ 
+  #We see highest homerun probability at LA of about 26 degrees
+```
+
+```{r}
+# create new data frame with predictive data
+#Used Aaron Nola's 2019 averages (4seam Fb) and Turner's average EV
+#Assume game played at Nats Park
+new_pitch_Nola <- data.frame(launch_angle = 26, launch_speed = 92.7, park_factor = 1.101)
+
+# make predictions on probability of a homerun on the given pitch at optimal launch angle
+augment(glm_Turner2, newdata = new_pitch_Nola, type.predict = "response")
+# 0.02525
+
+# make predictions on expected distance on the given pitch at optimal launch angle
+augment(glm_Turner3, newdata = new_pitch_Nola, type.predict = "response")
+#241.8593 feet
+```
+
+```{r}
+#Confusion Matrix
+tidy.Turner<- augment(glm_Turner2, type.predict = "response") %>%
+    mutate(homerun.hat = round(.fitted))
+tidy.Turner %>%
+  select(homerun, homerun.hat) %>%
+  table()
+```
+
+```{r}
+#Data formatting
+
+#Replacing nulls with NA
+VictorRobles$launch_angle[VictorRobles$launch_angle == "null"] <- NA
+VictorRobles$launch_speed[VictorRobles$launch_speed == "null"] <- NA
+VictorRobles$effective_speed[VictorRobles$effective_speed == "null"] <- NA
+VictorRobles$release_spin_rate[VictorRobles$release_spin_rate == "null"] <- NA
+VictorRobles$hit_distance_sc[VictorRobles$hit_distance_sc == "null"] <- NA
+
+#changing structure for analysis
+VictorRobles$launch_angle <- as.numeric(as.character(VictorRobles$launch_angle))
+VictorRobles$launch_speed <- as.numeric(as.character(VictorRobles$launch_speed))
+VictorRobles$effective_speed <- as.numeric(as.character(VictorRobles$effective_speed))
+VictorRobles$release_spin_rate <- as.numeric(as.character(VictorRobles$release_spin_rate))
+VictorRobles$hit_distance_sc <- as.numeric(as.character(VictorRobles$hit_distance_sc))
+```
+
+```{r}
+#Standard Logistic model 
+glm_Robles <- glm(homerun ~ launch_angle + launch_speed + effective_speed +   release_spin_rate + park_factor, data = VictorRobles, family = binomial, na.action = na.exclude)
+
+summary(glm_Robles)
+
+#Improved Model using polynomial fitting for launch angle
+#Some regressors aren't statisticall significant but I chose to keep them anyways
+glm_Robles2 <- glm(homerun ~ poly(launch_angle, 2, raw=TRUE) + launch_speed + effective_speed:release_spin_rate + park_factor, data = VictorRobles, family = binomial, na.action = na.exclude)
+
+summary(glm_Robles2)
+
+#Same model but with distance
+glm_Robles3 <- lm(hit_distance_sc ~ poly(launch_angle,2,raw=TRUE) + launch_speed + effective_speed:release_spin_rate + park_factor, data = VictorRobles, na.action = na.exclude)
+
+summary(glm_Robles3)
+```
+
+```{r}
+#Filtering middle launch angle values
+VictorRobles_middle <- VictorRobles %>%
+  filter(launch_angle >= 0, launch_angle  <= 60)
+
+# scatterplot with jitter
+data_space <- ggplot(data = VictorRobles_middle, aes(y = homerun, x = launch_angle)) +
+      geom_jitter(width = 0, height = 0.05, alpha = 0.5) + ggtitle("Victor Robles") 
+#smooth curve
+ data_space +
+  geom_smooth() + geom_vline(xintercept = 30)
+ #We see highest point on geom_smooth curve occurs about launch angle = 30 degrees
+```
+
+```{r}
+# create new data frame with predictive data
+#Used Aaron Nola's 2019 averages (4seam Fb) and Robles's average EV
+#Assume game played at Nats Park
+new_pitch_Nola <- data.frame(launch_angle = 30, launch_speed = 80.3, effective_speed = 89.7, release_spin_rate = 2171, park_factor = 1.101)
+
+# make predictions on probability of a homerun on the given pitch at optimal launch angle
+augment(glm_Robles2, newdata = new_pitch_Nola, type.predict = "response")
+# 2.104283e-09
+
+# make predictions on expected distance on the given pitch at optimal launch angle
+augment(glm_Robles3, newdata = new_pitch_Nola, type.predict = "response")
+#222.46 feet
+```
+
+```{r}
+#Confusion Matrix
+tidy.Robles <- augment(glm_Robles2, type.predict = "response") %>%
+    mutate(homerun.hat = round(.fitted))
+tidy.Robles %>%
+  select(homerun, homerun.hat) %>%
+  table()
+```
